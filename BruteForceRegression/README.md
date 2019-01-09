@@ -1,48 +1,46 @@
-# 最简单的机器学习入门
+# Straight-forward Understanding and Simple Practice in Machine Learning
 
-这篇文章是受到 Andrew Wu 的机器学习课程启发，基于这个课程的一个实践，目的说明机器学习到底在干什么，以及机器学习算法的最基本的原理，并使用最原始的方法实现一个机器学习的算法。
+This blog is inspired by Andrew Wu's Machine Learning course, which aims to give you a most straightfoward concept of Machine Learning. At first it is comeing out with a problem whhich could be solved by using machine learning ideas, then I will elaborate what machine learning is really doing and the definination of Linear Regression base on the example; next we will focus on implementing this simple machine learning algorithm with the very basic library of Python; At last I will talk about the precision and time complexity of this algorithm.
 
-### 通过机器学习解决一个问题
+### Solving a problem using machine learning ideas
 
-假设我想预测一个地区的某种面积大小房子对应的房价。  
-那么我搜集了一拼数据，数据由房子大小和评价构成。如100平方米的房子，售价是57万；300平方米的房子售价130万。
-这样的数据用一个坐标轴进行表示，横轴为面积大小，纵轴为房子的售价。将所有的数据绘制到坐标轴上，如图所示。
+Imagine that a friend of you is going to sell his house, and he wants you to help him estimate how much money he would charge.
+
+Firstly I collect some data, which each item comprises the size and price of the house. For example, a house with a size of 100m<sup>2</sup> worths 570,000$. (We are just simplifying the problem into smallest one which means the size of a house is the unique factor to the price of it.)
+
+Let's draw the data in a coordinate axis, the x-coordinate denotes the size of houses and y-coordinate denotes the estimate price of the houses. The plot will look like below:
 
 ![basic](https://raw.githubusercontent.com/jkangzhang/SimpleMachineLearning/master/BruteForceRegression/images/points.jpg)
 
-不妨假设，面积大小与房价存在某种线性关系。那么我们要做的就是通过现有数据找到这样的线性关系，即直观上说是，找到一条直线尽可能通过最多的点。如图所示，红色即为我们想找到的直线。
+Here we keeping going on simplifying the problem, we may consider this is a linear relationship between the size and the price of a house. And what we need to do is unveiling the releationship of these two factors base on the data. More straight-forwardly, we need to find a line which goes through the most points on the plot, as you see, the red color line is the best one among all of the lines.
 
 ![lines](https://raw.githubusercontent.com/jkangzhang/SimpleMachineLearning/master/BruteForceRegression/images/lines.jpg)
 
-如果有了这样的一条直线，那么我有了任意一个面积数据就可以计算出它对应的房价了。我们要设计的机器学习算法，就是让机器自己找到这样的一条直线。
+If I have got this line in some way, I could estimate the price of a house if the size of the house is given. Thus we need to conceive an algorithm to let machine find this line itself.
 
-### 线性回归的原理
+### Linear Regression
 
-所以机器学习的本质就是根据一些训练数据，通过一个学习算法，让机器学得某个函数。这个函数根据给定输入（房子面积），可以给出输出（房价）。
+In conclusion, the nature of machine learning is finding a function through an algorithm  which conceived base on some data. This function can use given input, to predict output. Here is a generally conception graph of machine learning. 
 
 ![graph](https://raw.githubusercontent.com/jkangzhang/SimpleMachineLearning/master/BruteForceRegression/images/algorithm.jpg)
 
-
-明显地，上面的直线就是要求得函数，这个函数可以表示为：
+Apparently, the red line we mentioned above is the function the machine need to find out. The function can denote in this mathematic way:
 
 h(x) = wx + b
 
-w, b 称为这个函数的参数。 
+This is just a general function of a line, and we define **w** and **b** are the parameters of this function.
 
-那么问题从求h(x)这个函数转换成求它的两个参数 **w** 和 **b**。  
-即找出这样的 w 和 b 让每一个训练数据中的每一个 h(x) 和 y 尽可能的接近。  
-对于整体样本(m个）来说，即让所有样本的差异综合最小。
+It is easy to figure out the essential part of this problem is to get the two parameters **w** and **b**, thus we find need to search a pair of w and b, such that each items of the training data has good minimal difference between h(x) and y. As more generally, such w and b minimize the sum of the whole training data's difference. Here's the mathematic denotion:
 
-\sum_1^m\(h(x^i)-y^i)^2
+$\sum_1^m\(h(x^i)-y^i)^2
 
-这样的问题，由于问题的是线性的，在机器学习中成为**线性回归**问题，且这个问题中只有一个元素(x)，所以这个问题成为**一元线性回归**问题。
+For this kind of problem, as it is a linear relationship between input and output, we call it a **Linear Regression Problem** in machine learning, and for this simple one, there is only one variable input, we call it a Unique Linear Regression Problem.
 
+### Implementing the algorithm in brute-force way
 
-### 用最简单的方式实现机器学习算法
+Here we want to implement the algorithm in the algorithm, using a most straight-forward way, method of exhaustion.
 
-下面就就以上面的问题举例，用最简单的方式实现找出 w 和 b，核心思想就是穷举法。  
-
-首先，先写一个函数，模拟这些数据。
+Firstly we compose a function to generate some training data.
 
 ```python
 def generate_train_data():
@@ -57,9 +55,9 @@ def generate_train_data():
     return d
 ```
 
-上面的我在造数据的过程中，我定义了一组 w 和 b，代表这组数据的潜在规律，而下面的训练的算法，就是为了找出这组 w 和 b。
+As you see, I defined two variables w and b, which represent the underlying regulation of the training data.
 
-训练算法中，我们选择一个起始值，以固定的步长，进行穷举，输入数据的前 m - 1 个数据，将最后一个数据留下验证学习效果。
+Secondly, we come into the training part. In this function, I choose an originial value and enumerate one by one in a stable step. And we use the first m - 1 piece of data for training, leave the last for testifying.
 
 ```python
 def train(data):
@@ -84,23 +82,20 @@ def train(data):
     return w, b
 ```
 
-这样我们就得到了 w 和 b。
+Here we got the parameter w and b.
 
-然后我们通过 predict 函数验证学习效果。
+Then we test them by another function.
+
 
 ```python
 def predict(w, b, x):
     return w * x + b
 ```
 
-### 想更多些
+### More
 
+Let's finish our last work, just consider what is the time complexity of this algorithm.
 
-那么上面的线性回归算法的时间复杂度是多少呢？  
-很明显，是根据你的循环的随着循环的步长指数型增加，而这步长就代表了学习算法的精度，步长设置的越小，精度则越高，时间复杂度就越高，按一台32位的机器的最大精度来算，穷举所有数字的时间复杂度为：
+Apparently, the time the machine need to compute depends on the step of the iteration, as it is also the precision of this algorithm. For a 32-bit machine in the biggest precision, the time complexity is 2<sup>32</sup> * 2<sup>32</sup> * m
 
-2<sup>32</sup> * 2<sup>32</sup> * m
-
-m 为训练数据的大小。
-
-
+m denotes the size of the training data.
