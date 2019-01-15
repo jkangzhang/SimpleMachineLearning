@@ -20,18 +20,7 @@ def gradientDescent(X, y, theta, alpha=0.01, epoch=1500):
     return theta, js
 
 def normalEquation(X, y):
-    A = np.dot(X.T, X)
-    B = np.linalg.inv(A)
-    C = np.dot(B, X.T)
-    D = np.dot(C, y)
-    return D
-
-def train():
-    # read data
-    data = pd.read_csv("ex1data1.txt", header=None)
-    # show image
-    # plt.scatter(data[0], data[1])
-    # plt.xticks(np.arange(5, 30, step=5))
+    A = np.dot(X.T, X) B = np.linalg.inv(A) C = np.dot(B, X.T) D = np.dot(C, y) return D def train(): # read data data = pd.read_csv("ex1data1.txt", header=None) # show image # plt.scatter(data[0], data[1]) # plt.xticks(np.arange(5, 30, step=5))
     # plt.yticks(np.arange(-5, 30, step=5))
     # plt.show()
     # compute cost function
